@@ -4,7 +4,7 @@ This application is intended for use at the Wellness Center of Lake Martin as is
 
 The purpose of Activity Report is to automate Excel spreadsheet reports of member visits.
 
-![alt text](https://github.com/loganduck/activity-report/raw/master/src/main/resources/images/menu.png "Activity Report Menu")
+<img src="https://github.com/loganduck/activity-report/raw/master/src/main/resources/images/menu.png" width="250" height="258" />
 
 **Before getting started, you must save the Visit Activity Report.**
 
