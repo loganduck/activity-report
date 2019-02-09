@@ -1,9 +1,5 @@
 package datasource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class Date {
 	private String month;
 	private String day;
@@ -11,10 +7,7 @@ public class Date {
 	private String date;
 
 	public String getDateFromFile(String line) {
-		String[] arr = line.split(" ");
-		List<String> values = new ArrayList<String>(Arrays.asList(arr));
-		values.removeAll(Arrays.asList(""));
-		arr = Arrays.copyOf(values.toArray(), values.size(), String[].class);
+		String[] arr = ExtractVisitData.removeEmptyIndices(line.split(" "));
 
 		extractMonth(arr[arr.length - 3]);
 		extractDay(arr[arr.length - 2]);

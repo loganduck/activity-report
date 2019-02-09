@@ -34,7 +34,8 @@ public class ExtractVisitData {
 		try {
 			scan = new Scanner(new File(getSource()));
 		} catch (FileNotFoundException e) {
-
+			System.out.println("Error: cannot find source file - " + e.getMessage());
+			System.exit(1);
 		}
 
 		setDateOfReport(date.getDateFromFile(scan.nextLine())); // 08/31/18
@@ -47,15 +48,14 @@ public class ExtractVisitData {
 
 		try {
 			writer = new PrintWriter(file);
-
 		} catch (FileNotFoundException e) {
-
+			System.out.println("Error: cannot find writer file - " + e.getMessage());
 		}
 		String[] data;
 		while (counter < visitCount) {
 			queue = new ArrayList<String[]>();
 			do {
-				data = removeSpacesFromLine();
+				data = removeEmptyIndices(scan.nextLine().split(" "));
 				if (data.length == 0) {
 					String[] line = queue.remove(queue.size() - 1);
 					member = new Member();
@@ -67,13 +67,13 @@ public class ExtractVisitData {
 				queue.add(data);
 				counter++;
 			} while (data.length > 0);
+			
 			writeDataToFile(member);
 		}
 		scan.close();
 		writer.close();
 		
 		new Excel(getFile(), getDateOfReport(), getVisitCount());
-		
 	}
 
 	public void writeDataToFile(Member member) {
@@ -116,10 +116,10 @@ public class ExtractVisitData {
 	public File getFile() {
 		return file;
 	}
-
-	public String[] removeSpacesFromLine() {
-		List<String> listed_data = new ArrayList<String>(Arrays.asList(scan.nextLine().split(" ")));
-		listed_data.removeAll(Arrays.asList("", null));
-		return Arrays.copyOf(listed_data.toArray(), listed_data.size(), String[].class);	
+	
+	public static String[] removeEmptyIndices(String[] arr) {
+		List<String> list = new ArrayList<String>(Arrays.asList(arr));
+		list.removeAll(Arrays.asList("", null));
+		return Arrays.copyOf(list.toArray(), list.size(), String[].class);	
 	}
 }

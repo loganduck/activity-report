@@ -6,15 +6,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
+import datasource.ExtractVisitData;
 
 public class Error {
 	private JFrame frame;
@@ -67,7 +67,8 @@ public class Error {
 		}
 		
 		for (int i = 0; i < 6; i++) {
-			String[] line = removeSpacesFromLine();
+			String[] line = ExtractVisitData.removeEmptyIndices(scan.nextLine().split(" "));
+			
 			switch(i) {
 			case 0:
 				if (line.length != 10 || !(Arrays.toString(line).substring(1, 54).equals("Wellness, Center, LLC, Visit, Activity, Report, Date:"))) {
@@ -107,12 +108,6 @@ public class Error {
 			}	
 		}
 		return true;
-	}
-	
-	public String[] removeSpacesFromLine() {
-		List<String> listed_data = new ArrayList<String>(Arrays.asList(scan.nextLine().split(" ")));
-		listed_data.removeAll(Arrays.asList("", null));
-		return Arrays.copyOf(listed_data.toArray(), listed_data.size(), String[].class);	
 	}
 
 }
