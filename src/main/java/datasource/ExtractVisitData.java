@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import loganduck.Excel;
+import activityreport.Excel;
 
 public class ExtractVisitData {
 	private Scanner scan;

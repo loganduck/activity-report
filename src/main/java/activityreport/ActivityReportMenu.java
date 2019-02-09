@@ -1,4 +1,4 @@
-package loganduck;
+package activityreport;
 
 import java.awt.Color;
 import java.awt.Font;

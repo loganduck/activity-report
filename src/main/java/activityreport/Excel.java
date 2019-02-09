@@ -1,4 +1,4 @@
-package loganduck;
+package activityreport;
 
 import java.awt.Desktop;
 import java.io.File;
