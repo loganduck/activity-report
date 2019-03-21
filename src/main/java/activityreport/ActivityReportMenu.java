@@ -26,62 +26,6 @@ public class ActivityReportMenu implements MouseListener {
 	private JLabel filePathLabel;
 	private String file;
 	
-	/* entity widths */
-	private final int FRAME_WIDTH = 388;
-	private final int LOGO_WIDTH = 84;
-	private final int MENU_TITLE_WIDTH = 303;
-	private final int BUTTON_WIDTH = 240;
-	private final int ABOUT_BTN_WIDTH = 41;
-	private final int FILE_PATH_WIDTH = 430;
-	private final int GET_HELP_FRAME_WIDTH = 300;
-	private final int GET_HELP_WIDTH = 266;
-	private final int ABOUT_FRAME_WIDTH = 388;
-	private final int ABOUT_DISCLAIMER_WIDTH = 372;
-	private final int ABOUT_PRODUCTBY_WIDTH = 167;
-	private final int ABOUT_OK_WIDTH = 76;
-	private final int ABOUT_VERS_WIDTH = 48;
-	
-	/* entity heights */
-	private final int FRAME_HEIGHT = 400;
-	private final int LOGO_HEIGHT = 84;
-	private final int MENU_TITLE_HEIGHT = 36;
-	private final int BUTTON_HEIGHT = 40;
-	private final int ABOUT_BTN_HEIGHT = 37;
-	private final int FILE_PATH_HEIGHT = 20;
-	private final int GET_HELP_FRAME_HEIGHT = 300;
-	private final int GET_HELP_HEIGHT = 240;
-	private final int ABOUT_FRAME_HEIGHT = 280;	
-	private final int ABOUT_DISCLAIMER_HEIGHT = 120;
-	private final int ABOUT_PRODUCTBY_HEIGHT = 17;
-	private final int ABOUT_OK_HEIGHT = 30;
-	private final int ABOUT_VERS_HEIGHT = 16;
-	
-	/* entity x-coordinates / centered */
-	private final int LOGO_CENTERED = (FRAME_WIDTH / 2) - (LOGO_WIDTH / 2);
-	private final int MENU_TITLE_CENTERED = (FRAME_WIDTH / 2) - (MENU_TITLE_WIDTH / 2);
-	private final int BUTTONS_CENTERED = (FRAME_WIDTH / 2) - (BUTTON_WIDTH / 2);
-	private final int ABOUT_BTN_X = 353;
-	private final int FILE_PATH_X = 3;
-	private final int GET_HELP_X = 5;
-	private final int ABOUT_DISCLAIMER_X = 5;
-	private final int ABOUT_PRODUCTBY_X = 5;
-	private final int ABOUT_OK_X = 156;
-	private final int ABOUT_VERS_X = 5;
-	
-	/* entity y-coordinates */
-	private final int LOGO_Y = 20;
-	private final int MENU_TITLE_Y = 102;
-	private final int CHOOSE_FILE_BTN_Y = 175;
-	private final int GET_HELP_BTN_Y = 230;
-	private final int CREATE_REPORT_BTN_Y = 285;
-	private final int ABOUT_BTN_Y = 345;
-	private final int FILE_PATH_Y = 360;
-	private final int GET_HELP_Y = 5;
-	private final int ABOUT_DISCLAIMER_Y = 5;
-	private final int ABOUT_PRODUCTBY_Y = 150;
-	private final int ABOUT_OK_Y = 180;
-	private final int ABOUT_VERS_Y = 240;
-	
 	/* button / label text */
 	private final String CHOOSE_FILE_BTN_TEXT = "<html><body><font size='6'>Choose File</font></body></html>";
 	private final String GET_HELP_BTN_TEXT = "<html><body><font size='6'>Get Help</font></body></html>";
@@ -145,22 +89,25 @@ public class ActivityReportMenu implements MouseListener {
 	private final FileNameExtensionFilter CHOOSER_EXT_FILTER = new FileNameExtensionFilter("TEXT FILES", "txt", "text"); // new FileNameExtensionFilter(".txt, txt", "txt", "text")
 	
 	public ActivityReportMenu() {
+
+		
+		
 		frame = new JFrame(FRAME_TITLE);
 		frame.setLayout(null);
-		frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+		frame.setSize(388, 400);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		logo = new JLabel(LOGO_ICON);
-		logo.setBounds(LOGO_CENTERED, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
+		logo.setBounds((388 / 2) - (84 / 2), 20, 84, 84);
 		frame.add(logo);
 		
 		menuTitle = new JLabel(MENU_TITLE_TEXT);
 		menuTitle.setFont(MENU_TITLE_FONT);
 		menuTitle.setForeground(Color.WHITE);
-		menuTitle.setBounds(MENU_TITLE_CENTERED, MENU_TITLE_Y, MENU_TITLE_WIDTH, MENU_TITLE_HEIGHT);
+		menuTitle.setBounds((388 / 2) - (303 / 2), 102, 303, 36);
 		frame.add(menuTitle);
 		
 		chooseFileButton = new JButton(CHOOSE_FILE_BTN_TEXT);
@@ -198,7 +145,7 @@ public class ActivityReportMenu implements MouseListener {
 				}
 			}
 		});
-		chooseFileButton.setBounds(BUTTONS_CENTERED, CHOOSE_FILE_BTN_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+		chooseFileButton.setBounds((388 / 2) - (240 / 2), 175, 240, 40);
 		frame.add(chooseFileButton);
 		
 		getHelpButton = new JButton(GET_HELP_BTN_TEXT);
@@ -212,7 +159,7 @@ public class ActivityReportMenu implements MouseListener {
 			public void actionPerformed(ActionEvent e) {
 				JFrame frame = new JFrame(GET_HELP_FRAME_TITLE);
 				frame.setLayout(null);
-				frame.setSize(GET_HELP_FRAME_WIDTH, GET_HELP_FRAME_HEIGHT);
+				frame.setSize(300, 300);
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(null);
 				frame.getContentPane().setBackground(Color.DARK_GRAY);
@@ -220,13 +167,13 @@ public class ActivityReportMenu implements MouseListener {
 				JLabel label = new JLabel(GET_HELP_TEXT);
 				label.setFont(GET_HELP_DESCRIPTION_FONT);
 				label.setForeground(Color.WHITE);
-				label.setBounds(GET_HELP_X, GET_HELP_Y, GET_HELP_WIDTH, GET_HELP_HEIGHT);
+				label.setBounds(5, 5, 266, 240);
 				frame.add(label);
 				
 				frame.setVisible(true);
 			}
 		});
-		getHelpButton.setBounds(BUTTONS_CENTERED, GET_HELP_BTN_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+		getHelpButton.setBounds((388 / 2) - (240 / 2), 230, 240, 40);
 		frame.add(getHelpButton);
 		
 		createReportButton = new JButton(CREATE_REPORT_BTN_TEXT);
@@ -247,7 +194,7 @@ public class ActivityReportMenu implements MouseListener {
 				}
 			}
 		});
-		createReportButton.setBounds(BUTTONS_CENTERED, CREATE_REPORT_BTN_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+		createReportButton.setBounds((388 / 2) - (240 / 2), 285, 240, 40);
 		frame.add(createReportButton);
 		
 		aboutButton = new JButton(ABOUT_ICON); 
@@ -259,7 +206,7 @@ public class ActivityReportMenu implements MouseListener {
 			public void actionPerformed(ActionEvent e) {
 				final JFrame frame = new JFrame(ABOUT_TITLE);
 				frame.setLayout(null);
-				frame.setSize(ABOUT_FRAME_WIDTH, ABOUT_FRAME_HEIGHT);
+				frame.setSize(388, 280);
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(null);
 				frame.getContentPane().setBackground(Color.DARK_GRAY);
@@ -267,13 +214,13 @@ public class ActivityReportMenu implements MouseListener {
 				JLabel disclaimer = new JLabel(ABOUT_DISCLAIMER_TEXT);
 				disclaimer.setFont(ABOUT_DISCLAIMER_FONT);
 				disclaimer.setForeground(Color.WHITE);
-				disclaimer.setBounds(ABOUT_DISCLAIMER_X, ABOUT_DISCLAIMER_Y, ABOUT_DISCLAIMER_WIDTH, ABOUT_DISCLAIMER_HEIGHT);
+				disclaimer.setBounds(5, 5, 372, 120);
 				frame.add(disclaimer);
 				
 				JLabel label = new JLabel(ABOUT_PRODUCTBY_TEXT);
 				label.setFont(ABOUT_PRODUCTBY_FONT);
 				label.setForeground(Color.WHITE);
-				label.setBounds(ABOUT_PRODUCTBY_X, ABOUT_PRODUCTBY_Y, ABOUT_PRODUCTBY_WIDTH, ABOUT_PRODUCTBY_HEIGHT);
+				label.setBounds(5, 150, 167, 17);
 				frame.add(label);
 				
 				JButton button = new JButton("OK");
@@ -282,25 +229,25 @@ public class ActivityReportMenu implements MouseListener {
 						frame.dispose();
 					}
 				});
-				button.setBounds(ABOUT_OK_X, ABOUT_OK_Y, ABOUT_OK_WIDTH, ABOUT_OK_HEIGHT);
+				button.setBounds(156, 180, 76, 30);
 				frame.add(button);
 				
 				JLabel version = new JLabel(ABOUT_VERS_TEXT);
 				version.setFont(ABOUT_VERS_FONT);
 				version.setForeground(Color.WHITE);
-				version.setBounds(ABOUT_VERS_X, ABOUT_VERS_Y, ABOUT_VERS_WIDTH, ABOUT_VERS_HEIGHT);
+				version.setBounds(5, 240, 48, 16);
 				frame.add(version);
 				
 				frame.setVisible(true);	
 			}
 		});
-		aboutButton.setBounds(ABOUT_BTN_X, ABOUT_BTN_Y, ABOUT_BTN_WIDTH, ABOUT_BTN_HEIGHT);
+		aboutButton.setBounds(353, 345, 41, 37);
 		frame.add(aboutButton);
 		
 		filePathLabel = new JLabel("");
 		filePathLabel.setForeground(Color.WHITE);
 		filePathLabel.setFont(FILE_PATH_FONT);
-		filePathLabel.setBounds(FILE_PATH_X, FILE_PATH_Y, FILE_PATH_WIDTH, FILE_PATH_HEIGHT);
+		filePathLabel.setBounds(3, 360, 430, 20);
 		frame.add(filePathLabel);
 		
 		frame.setVisible(true);
