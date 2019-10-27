@@ -17,23 +17,34 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+/**
+ * 'Apache POI, a project run by the Apache Software Foundation provides pure Java libraries for reading and
+ * writing files in Microsoft Office formats, such as Word, PowerPoint and Excel.'
+ * @author LoganDuck
+ * @see https://poi.apache.org
+ * @see https://en.wikipedia.org/wiki/Apache_POI
+ */
 public class Excel {
-
 	private XSSFWorkbook workbook;
 	private XSSFSheet sheet;
+	private XSSFFont font;
 	private Row row;
 	private Cell cell;
-	private File source;
+	private File tempFile;
 	private int visitCount;
-	private String reportingMonth;
-	private String reportingYear;
-	private XSSFFont font;
+	private String reportingMonth, reportingYear;
 	private Scanner scan;
 	
-	public Excel(File source, String date, int visitCount) {
-		setSource(source);
+	/**
+	 * Constructor for <code>Excel</code>.
+	 * @param selectedFileSource
+	 * @param date
+	 * @param visitCount
+	 */
+	public Excel(File tempFile, String date, int visitCount) {
+		setTempFile(tempFile);
 		setVisitCount(visitCount);
-		extractDate(date);
+		convertDate(date);
 		
 		workbook = new XSSFWorkbook();
 		sheet = workbook.createSheet(getReportingMonth() + " " + getReportingYear());
@@ -62,6 +73,11 @@ public class Excel {
 		}	
 	}
 	
+	/**
+	 * Adds the header data to the created report. All reports will follow the same concept.
+	 * The report submitted to SilverSneakers for reimbursement must include facilities' name
+	 * address, location id, and reporting month and year. 
+	 */
 	public void addHeader() {
 		addRowForHeader(0, "WELLNESS CENTER", 0);
 		addRowForHeader(1, "309 MARIARDEN ROAD", 1);
@@ -70,15 +86,24 @@ public class Excel {
 		addRowForHeader(4, "REPORTING MONTH: " + getReportingMonth() + " " + getReportingYear(), 4);
 	}
 	
-	public void addRowForHeader(int cellRow, String value, int index) {
+	/**
+	 * Data added for each row in the header.
+	 * @param cellRow - the row number the data will be added to.
+	 * @param text - the <code>text</code> to be added to the <code>cellRow</code>.
+	 * @param index - the index for which to merge and center.
+	 */
+	public void addRowForHeader(int cellRow, String text, int index) {
 		row = sheet.createRow(cellRow);
 		cell = row.createCell(0);
 		CellUtil.setAlignment(cell, HorizontalAlignment.CENTER);
 		CellUtil.setFont(cell, font);
-		cell.setCellValue(value);
+		cell.setCellValue(text);
 		sheet.addMergedRegion(new CellRangeAddress(index, index, 0, 5));
 	}
 	
+	/**
+	 * Adds the column titles to the created report. All reports will follow the same concept.
+	 */
 	public void addColumnTitles() {
 		row = sheet.createRow(5);
 		columnTitle(0, "Member ID#");
@@ -89,17 +114,31 @@ public class Excel {
 		columnTitle(5, "Time of Visit");
 	}
 	
-	public void columnTitle(int index, String value) {
-		cell = row.createCell(index);
+	/**
+	 * Data added for each column for the report.
+	 * @param cellColumn
+	 * @param text
+	 */
+	public void columnTitle(int cellColumn, String text) {
+		cell = row.createCell(cellColumn);
 		CellUtil.setFont(cell, font);
-		cell.setCellValue(value);
+		cell.setCellValue(text);
 	}
 	
+	/**
+	 * The <code>file</code> contains the extracted data in the report that was saved
+	 * from the membership system. The extracted data is then written to the new report
+	 * and saved to the users Desktop.
+	 */
 	public void addData() {
 		try {
-			scan = new Scanner(getSource());
+			scan = new Scanner(getTempFile());
 			String[] data = scan.nextLine().split(",");
-			for (int i = 6; i < visitCount + 6; i++) {
+			
+			/* 'i' starts at 6 because header data is added above this row. 6 is added to
+			 * 'getVisitCount()' to ensure all members and their visits are written to the
+			 * report. */
+			for (int i = 6; i < getVisitCount() + 6; i++) {
 				row = sheet.createRow(i);
 				addMemberToRow(0, data[0]);
 				addMemberToRow(1, data[1]);
@@ -121,15 +160,28 @@ public class Excel {
 			sheet.autoSizeColumn(i);
 		}
 		
+		/* adds errors to ignore in the spreadsheet */
 		sheet.addIgnoredErrors(new CellRangeAddress(6, visitCount + 5, 0, 5), IgnoredErrorType.NUMBER_STORED_AS_TEXT, IgnoredErrorType.TWO_DIGIT_TEXT_YEAR);
 	}
 	
-	public void addMemberToRow(int index, String value) {
-		Cell cell = row.createCell(index);
-		cell.setCellValue(value);
+	/**
+	 * Adds data from the <code>Member</code> to each row in the spreadsheet.
+	 * @param cellColumn - the column the data is written to.
+	 * @param text - the text added to the cell.
+	 */
+	public void addMemberToRow(int cellColumn, String text) {
+		Cell cell = row.createCell(cellColumn);
+		cell.setCellValue(text);
 	}
 	
-	public void extractDate(String date) {
+	/**
+	 * The written report is saved to the users Desktop as (month)(year).xlsx.
+	 * <br>i.e., a report created in December 2018 would be saved as 'DECEMBER2018.xlsx'.
+	 * <br><br><code>convertDate</code> is used to change the numerical date to alphabetical
+	 * (i.e., '12' would be converted to 'DECEMBER').
+	 * @param date - the previously formatted date as mm/dd/yy.
+	 */
+	public void convertDate(String date) {
 		String month = date.substring(0, 2);
 		setReportingYear("20" + date.substring(date.length() - 2));
 		switch (month) {
@@ -149,34 +201,73 @@ public class Excel {
 		}
 	}
 	
-	public File getSource() {
-		return source;
+	/**
+	 * The <code>file</code> is a temporary txt file that extracted data in the report saved
+	 * from the membership system. Once the data is read from the <code>file</code>,
+	 * written to the report, and the report is opened from the application, the
+	 * <code>file</code> is deleted from the users Desktop.
+	 *  
+	 * @return the temporary file that contains data extracted in the report that was
+	 * saved from the membership system.
+	 */
+	public File getTempFile() {
+		return tempFile;
 	}
 	
-	public void setSource(File source) {
-		this.source = source;
+	/**
+	 * Sets the temporary file that was created from the extracted data in the report
+	 * that was saved from the membership system.
+	 * @param tempFile
+	 */
+	public void setTempFile(File tempFile) {
+		this.tempFile = tempFile;
 	}
 	
+	/**
+	 * <code>visitCount</code> represents the total number of visits for SilverSneakers
+	 * members during the reporting month. The value is initially determined after all the
+	 * data is extracted from <code>ExtractVisitData</code>.
+	 * @return - the total number of visits for the reporting month.
+	 */
 	public int getVisitCount() {
 		return visitCount;
 	}
 	
+	/**
+	 * Sets the visit count to use in the <code>Excel</code> class. The value is initially
+	 * determined after all the data is extracted from <code>ExtractVisitData</code>. 
+	 * @param visitCount
+	 */
 	public void setVisitCount(int visitCount) {
 		this.visitCount = visitCount;
 	}
 	
+	/**
+	 * @return the <code>reportingMonth</code> for the SilverSneakers report.
+	 */
 	public String getReportingMonth() {
 		return reportingMonth;
 	}
 	
+	/**
+	 * Sets the <code>reportingMonth</code> for the SilverSneakers report.
+	 * @param reportingMonth
+	 */
 	public void setReportingMonth(String reportingMonth) {
 		this.reportingMonth = reportingMonth;
 	}
 	
+	/**
+	 * @return the <code>reportingYear</code> for the SilverSneakers report. 
+	 */
 	public String getReportingYear() {
 		return reportingYear;
 	}
 	
+	/**
+	 * Sets the <code>reportingYear</code> for the SilverSneakers report.
+	 * @param reportingYear
+	 */
 	public void setReportingYear(String reportingYear) {
 		this.reportingYear = reportingYear;
 	}

@@ -6,221 +6,208 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
+import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import datasource.ExtractVisitData;
 
-public class ActivityReportMenu implements MouseListener {
-	private JFrame frame;
+/**
+ * SilverSneakers is a program that encourages older adults to participate in health and fitness by offering
+ * free memberships at participating fitness centers and is included with many Medicare plans. In return,
+ * fitness centers must submit their participating members visits per month for reimbursement.
+ * 
+ * ActivityReport is used at the Wellness Center of Lake Martin to extract visit activity data for
+ * SilverSneakers’ members to automatically generate required spreadsheet reporting using Apache POI.
+ * <br><br>
+ * Disclaimer: ActivityReport is not affiliated with SilverSneakers or Tivity Health and is
+ * specifically intended for use by the Wellness Center of Lake Martin to automatically generate
+ * required reporting.
+ * 
+ * <br><br>
+ * For any issues or feedback, please contact Logan Duck at logan.duck@yahoo.com with subject “ActivityReport”.
+ * @author LoganDuck
+ * @version 3
+ */
+public class ActivityReportMenu extends JPanel implements MouseListener {
+	private static final long serialVersionUID = 1L;
+	private JButton chooseFileButton, getHelpButton, createReportButton, aboutButton;
 	private JLabel logo;
 	private JLabel menuTitle;
-	private JButton chooseFileButton, getHelpButton, createReportButton, aboutButton;
+	
 	private JLabel filePathLabel;
 	private String file;
 	
-	/* button / label text */
-	private final String CHOOSE_FILE_BTN_TEXT = "<html><body><font size='6'>Choose File</font></body></html>";
-	private final String GET_HELP_BTN_TEXT = "<html><body><font size='6'>Get Help</font></body></html>";
-	private final String CREATE_REPORT_BTN_TEXT = "<html><body><font size='6'>Create Report</font></body></html>";
-	private final String ABOUT_BTN_NAME = "aboutButton";
-	private final String ABOUT_PRODUCTBY_TEXT = "Product by Logan Duck";
-	private final String ABOUT_VERS_TEXT = "v: 4.0.0";
-	private final String MENU_TITLE_TEXT = "Activity Report Menu";
-	private final String GET_HELP_TEXT = "<html><body>"
-			+ "Saving Visit Activity Report:<br>"
-			+ "1) 'Reports Menu' > 'Activity/Visit History'.<br>"
-			+ "2) 'Start Date' as first day of month.<br>"
-			+ "3) 'End Date' as last day of month.<br>"
-			+ "4) 'Start Time' as '00:00'.<br>"
-			+ "5) 'Stop Time' as '24:00'.<br>"
-			+ "6) 'Member Types' as 'SILVERSNEA'.<br>"
-			+ "7) 'Print/View/Export' > 'Save to File'.<br>"
-			+ "8) Save file as txt on the Desktop.<br>"
-			+ "<br><br>"
-			+ "Creating the spreadsheet report:<br>"
-			+ "1) Click 'Choose File'.<br>"
-			+ "2) Navigate to file and select it.<br>"
-			+ "3) Click 'Create Report'.<br>"
-			+ "4) File > Save as"
-			+ "</html>";
-	private final String ABOUT_DISCLAIMER_TEXT = "<html><body>"
-			+ "The Activity Report application generates spreadsheet reports of SilverSneakers"
-			+ " members monthly visit activity at the Wellness Center of Lake Martin. This product is"
-			+ "not associated or affiliated with SilverSneakers or Tivity Health.</body></html>";
-	
-	/* button names */
-	private final String CHOOSE_FILE_BTN_NAME = "chooseFileButton";
-	private final String GET_HELP_BTN_NAME = "getHelpButton";
-	private final String CREATE_REPORT_BTN_NAME = "createReportButton";
-	
-	/* button colors */
 	private final Color BUTTON_BACKGROUND = new Color(0, 150, 255);
-	private final Color BUTTON_COLOR_BLUE = new Color(0, 150, 255);
-	private final Color BUTTON_COLOR_GREY = new Color(145, 145, 145);
+	private final int BUTTON_WIDTH = 240, BUTTON_HEIGHT = 40;
 	
-	/* entity fonts */
-	private final Font MENU_TITLE_FONT = new Font(Font.SANS_SERIF, Font.ITALIC, 30);
-	private final Font FILE_PATH_FONT = new Font("Verdana", Font.PLAIN, 9);
-	private final Font GET_HELP_DESCRIPTION_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 12);
-	private final Font ABOUT_DISCLAIMER_FONT = new Font("Verdana", Font.BOLD, 15);
-	private final Font ABOUT_PRODUCTBY_FONT = new Font("Verdana", Font.BOLD, 13);
-	private final Font ABOUT_VERS_FONT = new Font("Verdana", Font.ITALIC, 12);
-	
-	/* frame titles */
-	private final String FRAME_TITLE = "Wellness Center - Activity Report";
-	private final String CHOOSER_DIALOG_TITLE = "Choose File";
-	private final String GET_HELP_FRAME_TITLE = "Get Help";
-	private final String ABOUT_TITLE = "About";
-	
-	/* application icons */
-	private final ImageIcon LOGO_ICON = new ImageIcon(ActivityReportMenu.class.getResource("/images/logo.png"));
-	private final ImageIcon ABOUT_ICON = new ImageIcon(ActivityReportMenu.class.getResource("/images/about.png"));
-	
-	/* file chooser */
-	private final String CHOOSER_DIR_PATH = System.getProperty("user.home") + "/Desktop";
-	private final FileNameExtensionFilter CHOOSER_EXT_FILTER = new FileNameExtensionFilter("TEXT FILES", "txt", "text"); // new FileNameExtensionFilter(".txt, txt", "txt", "text")
-	
+	/**
+	 * <code>ActivityReportMenu</code>'s constructor.
+	 * @see ExtractVisitData
+	 */
 	public ActivityReportMenu() {
-
+		setLayout(null);
+		setSize(App.WIDTH, App.HEIGHT);
+		setBackground(Color.DARK_GRAY);
 		
+		logo = new JLabel(new ImageIcon(ActivityReportMenu.class.getResource("/images/logo.png")));	
+		logo.setBounds((App.WIDTH / 2) - (logo.getPreferredSize().height / 2), 20, logo.getPreferredSize().width, logo.getPreferredSize().height);
+		add(logo);
 		
-		frame = new JFrame(FRAME_TITLE);
-		frame.setLayout(null);
-		frame.setSize(388, 400);
-		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.getContentPane().setBackground(Color.DARK_GRAY);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		logo = new JLabel(LOGO_ICON);
-		logo.setBounds((388 / 2) - (84 / 2), 20, 84, 84);
-		frame.add(logo);
-		
-		menuTitle = new JLabel(MENU_TITLE_TEXT);
-		menuTitle.setFont(MENU_TITLE_FONT);
+		menuTitle = new JLabel("Activity Report Menu");
+		menuTitle.setFont(new Font(Font.SANS_SERIF, Font.ITALIC, 30));
 		menuTitle.setForeground(Color.WHITE);
-		menuTitle.setBounds((388 / 2) - (303 / 2), 102, 303, 36);
-		frame.add(menuTitle);
+		menuTitle.setBounds((App.WIDTH / 2) - (menuTitle.getPreferredSize().width / 2), 102, menuTitle.getPreferredSize().width, menuTitle.getPreferredSize().height);
+		add(menuTitle);
 		
-		chooseFileButton = new JButton(CHOOSE_FILE_BTN_TEXT);
-		chooseFileButton.setName(CHOOSE_FILE_BTN_NAME);
+		chooseFileButton = new JButton("<html><body><font size='6'>Choose File</font></body></html>");
+		chooseFileButton.setName("chooseFileButton");
 		chooseFileButton.setBackground(BUTTON_BACKGROUND);
+		chooseFileButton.setForeground(Color.WHITE);
 		chooseFileButton.setOpaque(true);
 		chooseFileButton.setBorderPainted(false);
-		chooseFileButton.setForeground(Color.WHITE);
 		chooseFileButton.addMouseListener(this);
 		chooseFileButton.addActionListener(new ActionListener() {
+			/**
+			 * When <code>Choose File</code> is selected from the menu, it opens a <code>JFileChooser</code> to
+			 * select the file from the membership system to extract the data from. The file filter is set to txt
+			 * files only. Once the file is selected, the value for <code>file</code> is set.
+			 */
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fileChooser = new JFileChooser(CHOOSER_DIR_PATH);
-				fileChooser.setDialogTitle(CHOOSER_DIALOG_TITLE);
-				fileChooser.setFileFilter(CHOOSER_EXT_FILTER); 
-			
+				/*
+				 * When 'Choose File' is clicked, it opens a JFileChooser to select the file to extract data from.
+				 * The file filter is set to txt files only. Once the file is selected, the value for 'file'
+				 * is set.
+				 */
+				JFileChooser fileChooser = new JFileChooser(System.getProperty("user.home") + "/Desktop");
+				fileChooser.setDialogTitle("Choose File");
+				fileChooser.setFileFilter(new FileNameExtensionFilter("Text Files", "txt", ".txt"));
 				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				
 				boolean fileSelected = false;
 				if (fileChooser.showOpenDialog(chooseFileButton) == JFileChooser.APPROVE_OPTION) {
-					String dir = fileChooser.getCurrentDirectory().toString();
-					File selectedFile = fileChooser.getSelectedFile();
-					String source = "";
-					if (dir.substring(dir.length() - 1, dir.length()).equals(".")) {
-						dir = dir.substring(0, dir.length() - 1);
-						source = dir + selectedFile.getName();
-					} else {
-						source = dir + "/" + selectedFile.getName();
-					}
-					setFile(source);
+					setFile(fileChooser.getCurrentDirectory().toString() + "/" + fileChooser.getSelectedFile().getName());
 					fileSelected = true;
-					
+					/*
+					 * ActivityReportMenu will display the dir and file when is selected in the footer.
+					 */
 					if (fileSelected) {
-						filePathLabel.setText(source);
+						filePathLabel.setText(getFile().toString());
 					}
 				}
 			}
 		});
-		chooseFileButton.setBounds((388 / 2) - (240 / 2), 175, 240, 40);
-		frame.add(chooseFileButton);
+		chooseFileButton.setBounds((App.WIDTH / 2) - (BUTTON_WIDTH / 2), 175, BUTTON_WIDTH, BUTTON_HEIGHT);
+		add(chooseFileButton);
 		
-		getHelpButton = new JButton(GET_HELP_BTN_TEXT);
-		getHelpButton.setName(GET_HELP_BTN_NAME);		
+		getHelpButton = new JButton("<html><body><font size='6'>Get Help</font></body></html>");
+		getHelpButton.setName("getHelpButton");		
 		getHelpButton.setBackground(BUTTON_BACKGROUND);
+		getHelpButton.setForeground(Color.WHITE);
 		getHelpButton.setOpaque(true);
 		getHelpButton.setBorderPainted(false);
-		getHelpButton.setForeground(Color.WHITE);
 		getHelpButton.addMouseListener(this);
 		getHelpButton.addActionListener(new ActionListener() {
+			/**
+			 * Opens a window with instructions on how to save the file from the membership system
+			 * and how to get the report created.
+			 */
 			public void actionPerformed(ActionEvent e) {
-				JFrame frame = new JFrame(GET_HELP_FRAME_TITLE);
+				JFrame frame = new JFrame("Get Help");
 				frame.setLayout(null);
 				frame.setSize(300, 300);
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(null);
 				frame.getContentPane().setBackground(Color.DARK_GRAY);
 				
-				JLabel label = new JLabel(GET_HELP_TEXT);
-				label.setFont(GET_HELP_DESCRIPTION_FONT);
+				JLabel label = new JLabel("<html><body>"
+						+ "Saving Visit Activity Report:<br>"
+						+ "1) 'Reports Menu' > 'Activity/Visit History'.<br>"
+						+ "2) 'Start Date' as first day of month.<br>"
+						+ "3) 'End Date' as last day of month.<br>"
+						+ "4) 'Start Time' as '00:00'.<br>"
+						+ "5) 'Stop Time' as '24:00'.<br>"
+						+ "6) 'Member Types' as 'SILVERSNEA'.<br>"
+						+ "7) 'Print/View/Export' > 'Save to File'.<br>"
+						+ "8) Save file as txt on the Desktop.<br>"
+						+ "<br><br>"
+						+ "Creating the spreadsheet report:<br>"
+						+ "1) Click 'Choose File'.<br>"
+						+ "2) Navigate to file and select it.<br>"
+						+ "3) Click 'Create Report'.<br>"
+						+ "4) File > Save as"
+						+ "</html>");
+				label.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
 				label.setForeground(Color.WHITE);
-				label.setBounds(5, 5, 266, 240);
+				label.setBounds(5, 5, label.getPreferredSize().width, label.getPreferredSize().height);
 				frame.add(label);
-				
 				frame.setVisible(true);
 			}
 		});
-		getHelpButton.setBounds((388 / 2) - (240 / 2), 230, 240, 40);
-		frame.add(getHelpButton);
+		getHelpButton.setBounds((App.WIDTH / 2) - (BUTTON_WIDTH / 2), 230, BUTTON_WIDTH, BUTTON_HEIGHT);
+		add(getHelpButton);
 		
-		createReportButton = new JButton(CREATE_REPORT_BTN_TEXT);
-		createReportButton.setName(CREATE_REPORT_BTN_NAME);
+		createReportButton = new JButton("<html><body><font size='6'>Create Report</font></body></html>");
+		createReportButton.setName("createReportButton");
 		createReportButton.setBackground(BUTTON_BACKGROUND);
+		createReportButton.setForeground(Color.WHITE);
 		createReportButton.setOpaque(true);
 		createReportButton.setBorderPainted(false);
-		createReportButton.setForeground(Color.WHITE);
 		createReportButton.addMouseListener(this);
 		createReportButton.addActionListener(new ActionListener() {
+			/**
+			 * Validates the selected <code>file</code> is in the correct format by checking specific header information.
+			 * If the <code>file</code> is not correct, a <code>SelectedFile</code> window opens with the error.
+			 * If the <code>file</code> is correct, the data is extracted in <code>ExtractVisitData</code>.
+			 * 
+			 * <br><br>See also: <code>SelectedFile.java</code>, <code>ExtractVisitData.java</code>
+			 */
 			public void actionPerformed(ActionEvent e) {
-				Error error = new Error();
-				if (getFile() == null || getFile().length() < 1 || !(error.checkFileFormat(getFile()))) {
-					error.throwError();
+				SelectedFile selectedFile = new SelectedFile();
+				if (getFile() == null || getFile().length() < 1 || !(selectedFile.isValidFileFormat(getFile()))) {
+					selectedFile.throwError();
 				} else {
-					frame.dispose();
+					App.dispose();
 					new ExtractVisitData(getFile());					
 				}
 			}
 		});
-		createReportButton.setBounds((388 / 2) - (240 / 2), 285, 240, 40);
-		frame.add(createReportButton);
+		createReportButton.setBounds((App.WIDTH / 2) - (BUTTON_WIDTH / 2), 285, BUTTON_WIDTH, BUTTON_HEIGHT);
+		add(createReportButton);
 		
-		aboutButton = new JButton(ABOUT_ICON); 
-		aboutButton.setName(ABOUT_BTN_NAME);
+		aboutButton = new JButton(new ImageIcon(ActivityReportMenu.class.getResource("/images/about.png"))); 
+		aboutButton.setName("aboutButton");
 		aboutButton.setBackground(Color.DARK_GRAY);
 		aboutButton.setOpaque(true);
 		aboutButton.setBorderPainted(false);
 		aboutButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				final JFrame frame = new JFrame(ABOUT_TITLE);
+				final JFrame frame = new JFrame("About");
 				frame.setLayout(null);
 				frame.setSize(388, 280);
 				frame.setResizable(false);
 				frame.setLocationRelativeTo(null);
 				frame.getContentPane().setBackground(Color.DARK_GRAY);
 				
-				JLabel disclaimer = new JLabel(ABOUT_DISCLAIMER_TEXT);
-				disclaimer.setFont(ABOUT_DISCLAIMER_FONT);
+				//TODO: update disclaimer info and bounds
+				JLabel disclaimer = new JLabel("<html><body>"
+						+ "ActivityReport is not affiliated with SilverSneakers or Tivity Health and is"
+						+ " specifically intended for use by the Wellness Center of Lake Martin to automatically generate"
+						+ " required reporting for SilverSneakers.</body></html>");
+				disclaimer.setFont(new Font("Verdana", Font.BOLD, 15));
 				disclaimer.setForeground(Color.WHITE);
 				disclaimer.setBounds(5, 5, 372, 120);
 				frame.add(disclaimer);
 				
-				JLabel label = new JLabel(ABOUT_PRODUCTBY_TEXT);
-				label.setFont(ABOUT_PRODUCTBY_FONT);
+				JLabel label = new JLabel("Product by Logan Duck");
+				label.setFont(new Font("Verdana", Font.BOLD, 13));
 				label.setForeground(Color.WHITE);
-				label.setBounds(5, 150, 167, 17);
+				label.setBounds(5, 150, label.getPreferredSize().width, label.getPreferredSize().height);
 				frame.add(label);
 				
 				JButton button = new JButton("OK");
@@ -229,68 +216,85 @@ public class ActivityReportMenu implements MouseListener {
 						frame.dispose();
 					}
 				});
-				button.setBounds(156, 180, 76, 30);
+				button.setBounds(156, 180, button.getPreferredSize().width, button.getPreferredSize().height);
 				frame.add(button);
 				
-				JLabel version = new JLabel(ABOUT_VERS_TEXT);
-				version.setFont(ABOUT_VERS_FONT);
+				JLabel version = new JLabel("v: 3");
+				version.setFont(new Font("Verdana", Font.ITALIC, 12));
 				version.setForeground(Color.WHITE);
-				version.setBounds(5, 240, 48, 16);
+				version.setBounds(5, 240, version.getPreferredSize().width, version.getPreferredSize().height);
 				frame.add(version);
 				
 				frame.setVisible(true);	
 			}
 		});
-		aboutButton.setBounds(353, 345, 41, 37);
-		frame.add(aboutButton);
+		aboutButton.setBounds(353, 345, aboutButton.getPreferredSize().width, aboutButton.getPreferredSize().height);
+		add(aboutButton);
 		
 		filePathLabel = new JLabel("");
 		filePathLabel.setForeground(Color.WHITE);
-		filePathLabel.setFont(FILE_PATH_FONT);
+		filePathLabel.setFont(new Font("Verdana", Font.PLAIN, 9));
 		filePathLabel.setBounds(3, 360, 430, 20);
-		frame.add(filePathLabel);
+		add(filePathLabel);
 		
-		frame.setVisible(true);
 	}
 	
+	/**
+	 * @return - The <code>file</code> chosen from JFileChooser
+	 */
 	public String getFile() {
 		return file;
 	}
 	
+	/**
+	 * The <code>file</code> selected from the <code>JFileChooser</code> must be in txt format.
+	 * Once chosen, the value for <code>file</code> is set. 
+	 * @param file - The valid file selected.
+	 */
 	public void setFile(String file) {
 		this.file = file;
 	}
 	
+	/**
+	 * When a button is pressed, the background color changes to gray. Once released,
+	 * it will default.
+	 */
 	public void mousePressed(MouseEvent e) {
+		Color buttonColorGray = new Color(145, 145, 145);
 		String[] arr = e.getSource().toString().split(",");
 		String button = arr[0].substring(arr[0].indexOf("[") + 1);
 		switch (button) {
 			case "chooseFileButton":
-				chooseFileButton.setBackground(BUTTON_COLOR_GREY);
+				chooseFileButton.setBackground(buttonColorGray);
 				break;
 			case "getHelpButton":
-				getHelpButton.setBackground(BUTTON_COLOR_GREY);
+				getHelpButton.setBackground(buttonColorGray);
 				break;
 			case "createReportButton":
-				createReportButton.setBackground(BUTTON_COLOR_GREY);
+				createReportButton.setBackground(buttonColorGray);
 				break;
 			default:
 				System.out.println("No case set for button.");
 		}
 	}
 
+	/**
+	 * When a button is pressed, the background color changes to gray. Once released,
+	 * it will default.
+	 */
 	public void mouseReleased(MouseEvent e) {
+		Color buttonColorBlue = new Color(0, 150, 255);
 		String[] arr = e.getSource().toString().split(",");
 		String button = arr[0].substring(arr[0].indexOf("[") + 1);
 		switch (button) {
 			case "chooseFileButton":
-				chooseFileButton.setBackground(BUTTON_COLOR_BLUE);
+				chooseFileButton.setBackground(buttonColorBlue);
 				break;
 			case "getHelpButton":
-				getHelpButton.setBackground(BUTTON_COLOR_BLUE);
+				getHelpButton.setBackground(buttonColorBlue);
 				break;
 			case "createReportButton":
-				createReportButton.setBackground(BUTTON_COLOR_BLUE);
+				createReportButton.setBackground(buttonColorBlue);
 				break;
 			default:
 				System.out.println("No case set for button.");
@@ -300,12 +304,4 @@ public class ActivityReportMenu implements MouseListener {
 	public void mouseClicked(MouseEvent e) { }
 	public void mouseEntered(MouseEvent e) { }
 	public void mouseExited(MouseEvent e) { }
-	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new ActivityReportMenu();
-			}
-		});
-	}
 }

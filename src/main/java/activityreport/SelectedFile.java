@@ -16,13 +16,21 @@ import javax.swing.JLabel;
 
 import datasource.ExtractVisitData;
 
-public class Error {
+/**
+ * <code>SelectedFile</code> is used when a file is selected from the 
+ * <code>JFileChooser</code> in <code>ActivityReportMenu</code>
+ * @author LoganDuck (logan.duck@yahoo.com)
+ */
+public class SelectedFile {
 	private JFrame frame;
 	private JLabel errorIcon;
 	private JLabel errorLabel;
 	private JButton button;
 	private Scanner scan;
 	
+	/**
+	 * Opens up a window with an 'Incompatible file' error.
+	 */
 	public void throwError() {
 		frame = new JFrame("Error");
 		frame.setLayout(null);
@@ -32,40 +40,53 @@ public class Error {
 		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		
 		errorIcon = new JLabel(new ImageIcon(Error.class.getResource("/images/error.png")));
-		errorIcon.setBounds(155, 10, 78, 66);
+		errorIcon.setBounds(155, 10, errorIcon.getPreferredSize().width, errorIcon.getPreferredSize().height);
 		frame.add(errorIcon);
 		
 		errorLabel = new JLabel("Error: Incompatible file. Try again.");
-		errorLabel.setFont(new Font("Default", Font.BOLD, 13));
+		errorLabel.setFont(new Font("", Font.BOLD, 13));
 		errorLabel.setForeground(Color.WHITE);
-		errorLabel.setBounds(75, 85, 238, 16);
+		errorLabel.setBounds(75, 85, errorLabel.getPreferredSize().width, errorLabel.getPreferredSize().height);
 		frame.add(errorLabel);
 		
 		button = new JButton("OK");
-		button.setFont(new Font("Default", Font.PLAIN, 16));
+		button.setFont(new Font("", Font.PLAIN, 16));
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
 			}
 		});
-		button.setBounds(156, 110, 76, 30);
+		
+		button.setBounds(156, 110, button.getPreferredSize().width, button.getPreferredSize().height);
 		frame.add(button);
 		
 		frame.setVisible(true);
 	}
 	
-	public boolean checkFileFormat(String sourceFolder) {
+	/**
+	 * <code>isValidFileFormat</code> is called from <code>ActivityReportMenu</code>'s <code>createReportButton</code>
+	 * to validate file format. 
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public boolean isValidFileFormat(String file) {
 		try {
-			scan = new Scanner(new File(sourceFolder));
+			scan = new Scanner(new File(file));
+			if (!(scan.hasNext())) {
+				return false;
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
-		
-		if (!(scan.hasNext())) {
 			return false;
 		}
 		
+		/* Steps through the first six lines of the file to validate format. The first six lines are concrete and
+		 * will be the same for all files. Someone could copy the first six lines and put them at the top of any txt file
+		 * and it work, but there wouldn't be any benefit to them. They would just waste their time because the code will
+		 * break.
+		 */
 		for (int i = 0; i < 6; i++) {
 			String[] line = ExtractVisitData.removeEmptyIndices(scan.nextLine().split(" "));
 			
